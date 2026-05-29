@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technosomatic Cyberfeminism 2.0 — ARC Gallery Athena Fund</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: #222;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .hero img {
+            width: 200px;
+            height: 200px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 2rem 0;
+        }
+        
+        /* Bio */
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .bio-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        /* Statement */
+        .statement {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-left: 3px solid #000;
+        }
+        
+        .statement p {
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        /* Interactive Demo */
+        .demo-box {
+            background: #f5f5f5;
+            padding: 2rem;
+            border: 1px solid #ddd;
+        }
+        
+        .demo-text {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .gaze-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .gaze-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            filter: blur(12px);
+        }
+        
+        #gazeFocus {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            border: 2px solid red;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .work-item {
+            text-align: center;
+        }
+        
+        .work-item img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            margin-bottom: 0.75rem;
+        }
+        
+        .work-title {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .work-info {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* Video Sequence */
+        .video-sequence {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .video-thumb {
+            flex: 0 0 140px;
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+        
+        .video-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Precedent */
+        .precedent {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .precedent-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .precedent-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        
+        .precedent a {
+            font-size: 12px;
+            color: #000;
+            text-decoration: none;
+            border-bottom: 1px solid #000;
+        }
+        
+        /* Links Grid */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .link-card {
+            padding: 1rem;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #000;
+        }
+        
+        .link-card p:first-child {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .link-card p:last-child {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .link-card:hover {
+            background: #efefef;
+        }
+        
+        /* Footer */
+        .footer {
+            border-top: 1px solid #ddd;
+            padding-top: 2rem;
+            margin-top: 3rem;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .footer a {
+            color: #000;
+            text-decoration: none;
+            border-bottom: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h1>Technosomatic Cyberfeminism 2.0</h1>
+            <p>Solo show proposal for ARC Gallery Athena Fund, Chicago. September 2026.</p>
+            <img src="portrait.jpg" alt="Nataša Bajc">
+        </div>
+
+        <!-- Bio -->
+        <div class="section">
+            <h2>About the Artist</h2>
+            <p class="bio-text">
+                <strong>Nataša Bajc</strong> is an architect, artist, and researcher whose practice operates under the framework of Technosomatic Architecture — a methodology that deploys AI as a phenomenological instrument to close the feedback loop between architectural design and embodied human experience. Born in Belgrade and based in Los Angeles since 1997, she holds graduate degrees in architecture and urbanism from the University of Belgrade, algorithmic design from SCI-Arc, computer science from USC, and executive education from Harvard Business School, with early formation at Belgrade's Matematička Gimnazija. She is Co-Founder and CEO of Nexus Hestia Technologies, building sovereign institutional memory tools for the AECO industry. Her artistic work — spanning digital print, found object sculpture, and holographic installation — has been exhibited internationally, including the Venice Biennale of Architecture (2018) and the Beijing Biennale (2025).
+            </p>
+        </div>
+
+        <!-- Statement -->
+        <div class="section">
+            <h2>Artist Statement</h2>
+            <div class="statement">
+                <p>
+                    <strong>Technosomatic.</strong> Two words fused into a single diagnostic instrument. The digital infrastructure that mediates human experience collides with the body — the flesh, the primary site of knowing. Between them: the unthought known. The body already knows what the digital age is doing to it.
+                </p>
+                <p>
+                    This exhibition refuses the asymmetry that has defined Western visual culture for centuries. Breasts are everywhere. The phallus remains a taboo. Female objectification is so woven into culture it's become invisible. Male objectification is actively disallowed.
+                </p>
+                <p>
+                    Technosomatic Cyberfeminism 2.0 reverses this mechanism. Not to equalize. To expose. The female gaze becomes the instrument of rendering the male body into visibility — clinical, unblinking, and permanent.
+                </p>
+            </div>
+        </div>
+
+        <!-- Interactive Demo -->
+        <div class="section">
+            <h2>Interactive Installation: Selection</h2>
+            <div class="demo-box">
+                <p class="demo-text">
+                    Move your mouse across the image below. Where you look becomes sharp. Everything else blurs. This is how <em>Selection</em> works: the female gaze renders the male body into clarity, one viewer at a time. Ten images. Ten selections. The gaze is never uniform, never predictable, never repeatable.
+                </p>
+                <div class="gaze-container" id="gazeContainer">
+                    <img src="5.png" alt="Gaze Demo" id="gazeImage">
+                    <div id="gazeFocus"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="section">
+            <h2>10 Works in Exhibition</h2>
+            <div class="gallery">
+                <div class="work-item">
+                    <img src="MaleOdalisque.jpg" alt="Male Odalisque">
+                    <p class="work-title">Male Odalisque</p>
+                    <p class="work-info">Digital print with overpaint</p>
+                </div>
+                <div class="work-item">
+                    <img src="Corpus 123.jpg" alt="Triptych Corpus I">
+                    <p class="work-title">Triptych Corpus I</p>
+                    <p class="work-info">Digital print</p>
+                </div>
+                <div class="work-item">
+                    <img src="Corpus 123.jpg" alt="Triptych Corpus II">
+                    <p class="work-title">Triptych Corpus II</p>
+                    <p class="work-info">Digital print</p>
+                </div>
+                <div class="work-item">
+                    <img src="Corpus 123.jpg" alt="Triptych Corpus III">
+                    <p class="work-title">Triptych Corpus III</p>
+                    <p class="work-info">Digital print</p>
+                </div>
+                <div class="work-item">
+                    <img src="reterritorialization.jpg" alt="Reterritorialization">
+                    <p class="work-title">Reterritorialization</p>
+                    <p class="work-info">Digital print on canvas</p>
+                </div>
+                <div class="work-item">
+                    <img src="OdalisqueProtocol.jpg" alt="Odalisque Protocol">
+                    <p class="work-title">Odalisque Protocol</p>
+                    <p class="work-info">Digital print on canvas</p>
+                </div>
+                <div class="work-item">
+                    <img src="RestraintSystem.jpg" alt="Restraint System">
+                    <p class="work-title">Restraint System</p>
+                    <p class="work-info">Digital print on canvas</p>
+                </div>
+                <div class="work-item">
+                    <img src="Otium.jpg" alt="Otium">
+                    <p class="work-title">Otium</p>
+                    <p class="work-info">Alcohol ink on paper</p>
+                </div>
+                <div class="work-item">
+                    <img src="5.png" alt="Male Pleasure Study">
+                    <p class="work-title">Male Pleasure Study</p>
+                    <p class="work-info">Video (compositions)</p>
+                </div>
+                <div class="work-item">
+                    <img src="5.png" alt="Selection">
+                    <p class="work-title">Selection</p>
+                    <p class="work-info">Interactive gaze-tracking</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Sequence -->
+        <div class="section">
+            <h2>Selection: Video Stills Sequence</h2>
+            <div class="video-sequence">
+                <div class="video-thumb"><img src="1.png" alt="Still 1"></div>
+                <div class="video-thumb"><img src="2.png" alt="Still 2"></div>
+                <div class="video-thumb"><img src="3.png" alt="Still 3"></div>
+                <div class="video-thumb"><img src="4.png" alt="Still 4"></div>
+                <div class="video-thumb"><img src="5.png" alt="Still 5"></div>
+            </div>
+        </div>
+
+        <!-- Precedent -->
+        <div class="section">
+            <h2>Precedent Installation</h2>
+            <div class="precedent">
+                <p class="precedent-title">LERATA Festival 2016 — Interactive Art Installation</p>
+                <p class="precedent-text">
+                    <strong>Mind Map: Gaze as Interface</strong> (Los Angeles, February 2016)
+                </p>
+                <p class="precedent-text">
+                    Nataša Bajc premiered eye-tracking interactive installation at LERATA Festival for Emerging and Innovative Art. The piece used Tobii EyeX eye-tracker to render a blank wall as the visualization of internal thought. Where the viewer looked, the projector rendered light. The viewer's gaze became the instrument of creation. This precedent demonstrates a decade of expertise in eye-tracking technology, interactive installation, and the use of gaze as a primary artistic medium.
+                </p>
+                <a href="https://natashabajc.com/2018/05/09/interactive-art/" target="_blank">Read more about the LERATA installation</a>
+            </div>
+        </div>
+
+        <!-- Links -->
+        <div class="section">
+            <h2>Exhibition Websites & Links</h2>
+            <div class="links-grid">
+                <a href="https://technosomaticarchitecture.vercel.app/" target="_blank" class="link-card">
+                    <p>Technosomatic Architecture</p>
+                    <p>Full framework & research</p>
+                </a>
+                <a href="https://technosomatic-rendered.vercel.app/" target="_blank" class="link-card">
+                    <p>Technosomatic — Rendered</p>
+                    <p>Corpus Nullum exhibition</p>
+                </a>
+                <a href="https://technosomatic-holoscene.vercel.app/" target="_blank" class="link-card">
+                    <p>Holoscene</p>
+                    <p>Descending Data hologram</p>
+                </a>
+                <a href="https://natashabajc.com" target="_blank" class="link-card">
+                    <p>Artist Website</p>
+                    <p>Full practice & CV</p>
+                </a>
+                <a href="https://nexushestia.com" target="_blank" class="link-card">
+                    <p>Nexus Hestia</p>
+                    <p>AI startup & platform</p>
+                </a>
+                <a href="https://technosomatic-nude.vercel.app/" target="_blank" class="link-card">
+                    <p>NUDE Exhibition</p>
+                    <p>Manifest Gallery Cincinnati</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                <strong>Nataša Bajc</strong><br>
+                natasha.bajc@nexushestia.com<br>
+                <a href="https://natashabajc.com">natashabajc.com</a><br><br>
+                Artist Statement (full with 9 footnotes) and complete proposal documentation available at request.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const gazeContainer = document.getElementById('gazeContainer');
+        const gazeFocus = document.getElementById('gazeFocus');
+        
+        gazeContainer.addEventListener('mousemove', (e) => {
+            const rect = gazeContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left - 150;
+            const y = e.clientY - rect.top - 150;
+            
+            gazeFocus.style.left = x + 'px';
+            gazeFocus.style.top = y + 'px';
+            gazeFocus.style.display = 'block';
+        });
+        
+        gazeContainer.addEventListener('mouseleave', () => {
+            gazeFocus.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
