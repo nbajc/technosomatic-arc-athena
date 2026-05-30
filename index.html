@@ -7,548 +7,450 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
-
 <style>
 :root {
   --black: #000000;
   --white: #ffffff;
+  --warm-white: #faf8f4;
   --off-white: #f0ece4;
   --grey-light: rgba(255,255,255,0.55);
-  --grey-dim: rgba(255,255,255,0.2);
-  --grey-rule: rgba(255,255,255,0.12);
-  --accent: #c8a96e;       /* warm gold — same temperature as Rendered marks */
-  --accent-dim: rgba(200,169,110,0.35);
-  --red: #b84040;
+  --grey-dim: rgba(255,255,255,0.28);
+  --grey-rule: rgba(255,255,255,0.10);
+  --accent: #c8a96e;
+  --accent-dim: rgba(200,169,110,0.30);
+  --dark-rule: rgba(0,0,0,0.10);
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Cormorant', Georgia, serif;
-  --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+  --font-mono: 'SF Mono','Fira Code','Fira Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--black);
+  color:var(--off-white);
+  font-family:var(--font-display);
+  font-weight:300;
+  line-height:1.7;
+  overflow-x:hidden;
 }
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* ── LOADER ── */
+.loader{
+  position:fixed;inset:0;background:var(--black);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;transition:opacity 0.9s ease 0.4s;
+}
+.loader.hidden{opacity:0;pointer-events:none;}
+.loader-text{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.22em;
+  color:rgba(255,255,255,0.25);animation:blink 1.4s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.15;}}
 
-html { scroll-behavior: smooth; }
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.3rem 2.8rem;
+  background:rgba(0,0,0,0.88);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--grey-rule);
+}
+.nav-brand{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;
+  color:rgba(255,255,255,0.5);text-decoration:none;text-transform:uppercase;
+}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;
+  color:rgba(255,255,255,0.25);text-decoration:none;text-transform:uppercase;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--off-white);}
+.nav-back{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;
+  color:var(--accent);text-decoration:none;text-transform:uppercase;
+  border:1px solid var(--accent-dim);padding:0.35rem 1rem;
+  transition:all 0.2s;
+}
+.nav-back:hover{background:var(--accent-dim);}
 
-body {
-  background: var(--black);
-  color: var(--off-white);
-  font-family: var(--font-display);
-  font-weight: 300;
-  line-height: 1.7;
-  overflow-x: hidden;
-  cursor: crosshair;
+/* ── HERO — WARM WHITE ── */
+.hero{
+  background:var(--warm-white);
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:8rem 2.8rem 5rem;
+  position:relative;overflow:hidden;
+  border-bottom:1px solid var(--dark-rule);
 }
+.hero-img-wrap{
+  position:relative;
+  width:min(680px, 88vw);
+  margin-bottom:3.5rem;
+}
+.hero-img-wrap img{
+  width:100%;height:auto;display:block;
+  position:relative;z-index:1;
+}
+/* vignette fade — same as Rendered site */
+.hero-img-wrap::after{
+  content:'';
+  position:absolute;inset:0;z-index:2;
+  background:
+    radial-gradient(ellipse at center, transparent 38%, var(--warm-white) 78%);
+  pointer-events:none;
+}
+.hero-text{text-align:center;position:relative;z-index:1;}
+.hero-eyebrow{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.24em;
+  color:rgba(0,0,0,0.35);text-transform:uppercase;
+  margin-bottom:1.2rem;display:block;
+  opacity:0;animation:fadeUp 0.8s ease 0.5s forwards;
+}
+.hero-title{
+  font-size:clamp(2.8rem,7vw,6rem);
+  font-weight:300;font-style:italic;
+  line-height:1.05;letter-spacing:-0.01em;
+  color:#111;
+  margin-bottom:0.3rem;
+  opacity:0;animation:fadeUp 0.8s ease 0.7s forwards;
+}
+.hero-title span{
+  display:block;font-style:normal;
+  font-size:0.6em;font-weight:400;letter-spacing:0.05em;
+  color:rgba(0,0,0,0.45);
+}
+.hero-rule{
+  width:48px;height:1px;background:#c8a96e;
+  margin:2rem auto;
+  opacity:0;animation:fadeUp 0.8s ease 0.9s forwards;
+}
+.hero-meta{
+  display:flex;gap:3rem;flex-wrap:wrap;justify-content:center;
+  opacity:0;animation:fadeUp 0.8s ease 1.05s forwards;
+}
+.hero-meta-item{display:flex;flex-direction:column;gap:0.1rem;text-align:center;}
+.hero-meta-label{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.2em;
+  color:rgba(0,0,0,0.3);text-transform:uppercase;
+}
+.hero-meta-value{font-size:12px;color:rgba(0,0,0,0.65);}
 
-/* ─── LOADING ─────────────────────────────────── */
-.loader {
-  position: fixed; inset: 0; background: var(--black);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 9999; transition: opacity 0.8s ease 0.3s;
-}
-.loader.hidden { opacity: 0; pointer-events: none; }
-.loader-text {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em;
-  color: var(--grey-dim); animation: blink 1.2s infinite;
-}
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-/* ─── NAV ─────────────────────────────────────── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.4rem 2.5rem;
-  border-bottom: 1px solid var(--grey-rule);
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-.nav-brand {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em;
-  color: var(--grey-light); text-decoration: none; text-transform: uppercase;
-}
-.nav-links {
-  display: flex; gap: 2.2rem; list-style: none;
-}
-.nav-links a {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
-  color: var(--grey-dim); text-decoration: none; text-transform: uppercase;
-  transition: color 0.25s;
-}
-.nav-links a:hover { color: var(--off-white); }
-.nav-back {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
-  color: var(--accent); text-decoration: none;
-  border: 1px solid var(--accent-dim); padding: 0.35rem 0.9rem;
-  transition: all 0.25s;
-}
-.nav-back:hover { background: var(--accent-dim); }
-
-/* ─── HERO ────────────────────────────────────── */
-.hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 2.5rem 4rem;
-  position: relative;
-  overflow: hidden;
-  border-bottom: 1px solid var(--grey-rule);
-}
-
-.hero-bg {
-  position: absolute; inset: 0; z-index: 0;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-  opacity: 0.22;
-  filter: grayscale(0.4) contrast(1.1);
-}
-.hero-bg img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-}
-.hero-bg::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,1) 30%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0.7) 100%);
-}
-
-.hero-eyebrow {
-  position: relative; z-index: 1;
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.22em;
-  color: var(--accent); text-transform: uppercase;
-  margin-bottom: 1.8rem;
-  opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
-}
-
-.hero-title {
-  position: relative; z-index: 1;
-  font-size: clamp(3rem, 8vw, 7rem);
-  font-weight: 300; font-style: italic;
-  line-height: 1.0; letter-spacing: -0.01em;
-  margin-bottom: 0.4rem;
-  opacity: 0; animation: fadeUp 0.9s ease 0.7s forwards;
-}
-.hero-title span {
-  display: block; font-style: normal; font-size: 0.62em;
-  font-weight: 400; letter-spacing: 0.04em;
-  color: var(--grey-light);
-}
-
-.hero-meta {
-  position: relative; z-index: 1;
-  display: flex; gap: 3rem; flex-wrap: wrap;
-  margin-top: 2.5rem;
-  opacity: 0; animation: fadeUp 0.9s ease 0.95s forwards;
-}
-.hero-meta-item {
-  display: flex; flex-direction: column; gap: 0.15rem;
-}
-.hero-meta-label {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
-  color: var(--grey-dim); text-transform: uppercase;
-}
-.hero-meta-value {
-  font-size: 13px; font-weight: 400; color: var(--off-white);
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
-.hero-rule {
-  position: relative; z-index: 1;
-  width: 60px; height: 1px; background: var(--accent);
-  margin: 2rem 0;
-  opacity: 0; animation: fadeUp 0.9s ease 1.1s forwards;
+/* ── SECTION BASE (dark) ── */
+.section{
+  padding:6rem 2.8rem;
+  border-bottom:1px solid var(--grey-rule);
+  max-width:1100px;margin:0 auto;
+}
+.section-number{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.22em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+  display:block;margin-bottom:0.4rem;
+}
+.section-heading{
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:300;font-style:italic;
+  line-height:1.2;margin-bottom:3rem;
+  color:var(--off-white);
+}
+.section-heading em{font-style:normal;color:var(--accent);}
+
+/* ── STATEMENT ── */
+.statement-grid{
+  display:grid;grid-template-columns:200px 1fr;gap:5rem;align-items:start;
+}
+.statement-sidebar{position:sticky;top:6rem;}
+.sidebar-label{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:1rem;
+}
+.sidebar-tags{display:flex;flex-direction:column;gap:0.45rem;}
+.tag{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.14em;
+  color:var(--accent);text-transform:uppercase;
+  border:1px solid var(--accent-dim);padding:0.28rem 0.7rem;
+  display:inline-block;
+}
+.statement-body p{
+  font-size:clamp(1rem,1.4vw,1.18rem);
+  line-height:1.88;margin-bottom:1.6rem;
+  color:var(--off-white);font-weight:300;
+}
+.statement-body p:first-child{font-size:clamp(1.05rem,1.6vw,1.32rem);}
+.statement-body sup{
+  font-family:var(--font-mono);font-size:8px;color:var(--accent);margin-left:1px;
+}
+.blockquote-accent{
+  border-left:2px solid var(--accent);
+  padding:1rem 1.6rem;margin:2rem 0;
+  font-style:italic;
+  font-size:clamp(1.05rem,1.5vw,1.28rem);
+  color:rgba(255,255,255,0.55);
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(22px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ── WORK ENTRY — Rendered-style: image full row, text below ── */
+.work-entry{
+  margin-bottom:7rem;
+}
+.work-entry:last-child{margin-bottom:0;}
+.work-entry-number{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.22em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+  display:block;margin-bottom:1rem;
+}
+.work-entry-img{
+  width:100%;display:block;
+  border:none;
+  margin-bottom:0;
+  line-height:0;
+}
+.work-entry-img img{
+  width:100%;height:auto;display:block;
+  /* no crop, full image */
+}
+.work-fig-label{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.16em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+  padding:0.7rem 0 1.8rem;
+  border-bottom:1px solid var(--grey-rule);
+  margin-bottom:1.8rem;
+}
+.work-meta-row{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:0.3rem 2rem;margin-bottom:2rem;
+}
+.work-meta-pair{display:flex;flex-direction:column;gap:0.1rem;}
+.work-meta-key{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.16em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+}
+.work-meta-val{font-size:0.92rem;color:var(--off-white);}
+.work-entry h3{
+  font-size:clamp(1.4rem,2.2vw,1.9rem);
+  font-weight:300;font-style:italic;
+  margin-bottom:1.2rem;color:var(--off-white);
+}
+.work-statement p{
+  font-size:1rem;line-height:1.85;
+  color:rgba(255,255,255,0.55);
+  margin-bottom:1rem;
+}
+.work-divider{
+  border:none;border-top:1px solid var(--grey-rule);
+  margin:5rem 0 0;
 }
 
-/* ─── SECTION BASE ───────────────────────────── */
-section {
-  padding: 5rem 2.5rem;
-  border-bottom: 1px solid var(--grey-rule);
-  max-width: 1200px;
-  margin: 0 auto;
+/* triptych sub-item */
+.sub-item{
+  margin-top:3.5rem;
+  padding-top:3.5rem;
+  border-top:1px solid var(--grey-rule);
 }
-section.full-bleed { max-width: 100%; padding: 5rem 0; }
-
-.section-number {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em;
-  color: var(--grey-dim); text-transform: uppercase;
-  display: block; margin-bottom: 0.4rem;
+.sub-item-label{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.18);text-transform:uppercase;
+  margin-bottom:0.8rem;display:block;
 }
-.section-heading {
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 300; font-style: italic;
-  margin-bottom: 2.5rem; line-height: 1.2;
-  color: var(--off-white);
+.sub-item h4{
+  font-size:1.2rem;font-weight:300;font-style:italic;
+  margin-bottom:0.8rem;color:rgba(255,255,255,0.65);
 }
-.section-heading em { font-style: normal; color: var(--accent); }
-
-/* ─── STATEMENT ──────────────────────────────── */
-.statement-grid {
-  display: grid; grid-template-columns: 1fr 2fr; gap: 5rem;
-  align-items: start;
-}
-.statement-sidebar {
-  position: sticky; top: 6rem;
-}
-.sidebar-label {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
-  color: var(--grey-dim); text-transform: uppercase; margin-bottom: 1rem;
-}
-.sidebar-tags {
-  display: flex; flex-direction: column; gap: 0.5rem;
-}
-.tag {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em;
-  color: var(--accent); text-transform: uppercase;
-  border: 1px solid var(--accent-dim); padding: 0.3rem 0.7rem;
-  display: inline-block;
-}
-.statement-body p {
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
-  line-height: 1.85; margin-bottom: 1.6rem;
-  color: var(--off-white); font-weight: 300;
-}
-.statement-body p:first-child { font-size: clamp(1.1rem, 1.8vw, 1.4rem); }
-.statement-body sup {
-  font-family: var(--font-mono); font-size: 9px; color: var(--accent);
-  margin-left: 1px;
-}
-.blockquote-accent {
-  border-left: 2px solid var(--accent);
-  padding: 1.2rem 1.8rem;
-  margin: 2rem 0;
-  font-style: italic;
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  color: var(--grey-light);
+.sub-item p{
+  font-size:0.95rem;line-height:1.8;
+  color:rgba(255,255,255,0.4);margin-bottom:0;
 }
 
-/* ─── WORKS GRID ─────────────────────────────── */
-.works-intro {
-  max-width: 680px; margin-bottom: 3.5rem;
-  font-size: 1.05rem; color: var(--grey-light); line-height: 1.75;
+/* ── VIDEO PLACEHOLDER ── */
+.video-placeholder{
+  width:100%;background:#080808;
+  border:1px solid var(--grey-rule);
+  display:flex;align-items:center;justify-content:center;
+  min-height:320px;margin-bottom:0;
 }
-.works-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1px;
-  background: var(--grey-rule);
-  border: 1px solid var(--grey-rule);
-}
-.work-card {
-  background: var(--black);
-  padding: 0;
-  overflow: hidden;
-  position: relative;
-  transition: background 0.3s;
-}
-.work-card:hover { background: #0a0a0a; }
-.work-img-wrap {
-  aspect-ratio: 4/3; overflow: hidden; position: relative;
-  background: #080808;
-}
-.work-img-wrap img {
-  width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.6s ease, filter 0.4s ease;
-  filter: grayscale(0.15);
-}
-.work-card:hover .work-img-wrap img {
-  transform: scale(1.04); filter: grayscale(0);
-}
-.work-img-placeholder {
-  width: 100%; height: 100%; background: #0d0d0d;
-  display: flex; align-items: center; justify-content: center;
-}
-.work-img-placeholder span {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
-  color: var(--grey-dim); text-transform: uppercase;
-}
-.work-info {
-  padding: 1.4rem 1.6rem;
-  border-top: 1px solid var(--grey-rule);
-}
-.work-num {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
-  color: var(--grey-dim); margin-bottom: 0.3rem;
-}
-.work-title {
-  font-size: 1.1rem; font-weight: 400; font-style: italic;
-  color: var(--off-white); margin-bottom: 0.2rem;
-}
-.work-medium {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
-  color: var(--grey-dim); text-transform: uppercase;
-}
-.work-card.featured .work-img-wrap { aspect-ratio: 16/9; }
-.work-card.span-2 { grid-column: span 2; }
-
-/* ─── VIDEO / INTERACTIVE ────────────────────── */
-.interactive-wrap {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
-}
-.gaze-demo-block {
-  position: relative;
-}
-.gaze-container {
-  position: relative; overflow: hidden;
-  border: 1px solid var(--grey-rule);
-}
-.gaze-container img {
-  display: block; width: 100%; height: auto;
-  filter: blur(18px) brightness(0.6);
-  transition: filter 0.05s;
-}
-#gazeFocus {
-  position: absolute;
-  width: 180px; height: 180px;
-  pointer-events: none;
-  display: none;
-  clip-path: inset(0);
-}
-#gazeSharp {
-  position: absolute; inset: 0;
-  background-size: cover; background-position: center;
-  clip-path: inset(100% 100% 0% 0%);
-  transition: clip-path 0s;
-}
-.gaze-focus-ring {
-  position: absolute; inset: 0; pointer-events: none; display: none;
-}
-.gaze-focus-ring::after {
-  content: ''; position: absolute;
-  width: 184px; height: 184px;
-  border: 1px solid rgba(255,255,255,0.4);
-  box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
-}
-.gaze-label {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.18em;
-  color: var(--grey-dim); text-transform: uppercase;
-  margin-top: 0.8rem; text-align: center;
-}
-.interactive-text .section-heading { margin-bottom: 1.5rem; }
-.interactive-text p {
-  font-size: 1rem; line-height: 1.8; color: var(--grey-light);
-  margin-bottom: 1.2rem;
-}
-.work-specs {
-  margin-top: 2rem; border-top: 1px solid var(--grey-rule);
-  padding-top: 1.5rem;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 2rem;
-}
-.spec-row {
-  display: flex; flex-direction: column; gap: 0.15rem;
-}
-.spec-key {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em;
-  color: var(--grey-dim); text-transform: uppercase;
-}
-.spec-val {
-  font-size: 0.9rem; color: var(--off-white);
+.video-placeholder-inner{text-align:center;}
+.video-placeholder-inner span{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.22em;
+  color:rgba(255,255,255,0.18);text-transform:uppercase;
+  display:block;margin-bottom:0.5rem;
 }
 
-/* ─── PRECEDENT ──────────────────────────────── */
-.precedent-block {
-  border: 1px solid var(--grey-rule); padding: 2.5rem;
-  max-width: 780px;
-  position: relative;
+/* stills strip for Chambre */
+.stills-row{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
+  margin-top:2.5rem;
 }
-.precedent-block::before {
-  content: 'PRECEDENT'; position: absolute; top: -0.6rem; left: 1.5rem;
-  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.2em;
-  color: var(--accent); background: var(--black); padding: 0 0.5rem;
-}
-.precedent-year {
-  font-size: 3.5rem; font-weight: 300; font-style: italic;
-  color: rgba(200,169,110,0.18); line-height: 1;
-  margin-bottom: 0.8rem;
-}
-.precedent-block h3 {
-  font-size: 1.2rem; font-weight: 400; font-style: italic;
-  margin-bottom: 0.5rem; color: var(--off-white);
-}
-.precedent-block p {
-  font-size: 0.95rem; line-height: 1.8; color: var(--grey-light);
-  margin-bottom: 1rem;
-}
-.precedent-link {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em;
-  color: var(--accent); text-decoration: none; text-transform: uppercase;
-  border-bottom: 1px solid var(--accent-dim); padding-bottom: 1px;
-}
-.precedent-link:hover { border-color: var(--accent); }
-
-/* ─── VIDEO STILLS ───────────────────────────── */
-.stills-strip {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
-  background: var(--grey-rule);
-  margin-bottom: 1.5rem;
-}
-.still-item {
-  aspect-ratio: 1; overflow: hidden; background: #080808;
-  position: relative;
-}
-.still-item img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: grayscale(0.3); transition: filter 0.3s, transform 0.4s;
-}
-.still-item:hover img { filter: grayscale(0); transform: scale(1.06); }
-.still-label {
-  position: absolute; bottom: 0.5rem; left: 0.6rem;
-  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.4); text-transform: uppercase;
+.still-item{aspect-ratio:4/3;overflow:hidden;background:#080808;position:relative;}
+.still-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.still-item:hover img{transform:scale(1.05);}
+.still-cap{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.14em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+  margin-top:0.5rem;text-align:center;
 }
 
-/* ─── BIO ─────────────────────────────────────── */
-.bio-grid {
-  display: grid; grid-template-columns: auto 1fr; gap: 4rem; align-items: start;
+/* ── CHAMBRE SECRÈTE — gaze demo ── */
+.chambre-wrap{
+  width:100%;position:relative;overflow:hidden;
+  background:#050505;border:1px solid var(--grey-rule);
+  cursor:none;
 }
-.bio-portrait {
-  width: 220px; flex-shrink: 0;
+.chambre-wrap img#chambreBase{
+  width:100%;height:auto;display:block;
+  filter:blur(22px) brightness(0.45) saturate(0.7);
+  transition:filter 0.1s;
+  user-select:none;pointer-events:none;
 }
-.bio-portrait img {
-  width: 100%; display: block; filter: grayscale(0.2);
-  border: 1px solid var(--grey-rule);
+#chambreCanvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;
 }
-.bio-text p {
-  font-size: 1.05rem; line-height: 1.85; color: var(--grey-light);
-  margin-bottom: 1.3rem;
+.chambre-cursor{
+  position:absolute;width:80px;height:80px;
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:0;pointer-events:none;
+  display:none;transform:translate(-50%,-50%);
+  box-shadow:0 0 0 9999px rgba(0,0,0,0.6);
 }
-.bio-emails {
-  display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1.5rem 0;
-}
-.bio-emails a {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
-  color: var(--accent); text-decoration: none;
-}
-.bio-emails a:hover { text-decoration: underline; }
-
-/* ─── WEBSITES ─────────────────────────────── */
-.sites-hierarchy {
-  display: flex; flex-direction: column; gap: 0.8rem;
-}
-.site-primary {
-  display: flex; align-items: baseline; gap: 1rem;
-  border-top: 1px solid var(--grey-rule); padding-top: 0.8rem;
-}
-.site-primary a {
-  font-size: 1.05rem; font-style: italic; color: var(--off-white);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.site-primary a:hover { color: var(--accent); }
-.site-primary .site-desc {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
-  color: var(--grey-dim); text-transform: uppercase;
-}
-.site-children {
-  padding-left: 1.8rem; display: flex; flex-direction: column; gap: 0.5rem;
-}
-.site-child {
-  display: flex; align-items: baseline; gap: 0.8rem;
-}
-.site-child::before {
-  content: '·'; color: var(--grey-dim); font-size: 0.9rem; flex-shrink: 0;
-}
-.site-child a {
-  font-size: 0.95rem; color: var(--grey-light); text-decoration: none;
-  transition: color 0.2s;
-}
-.site-child a:hover { color: var(--off-white); }
-.site-child .site-desc {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
-  color: var(--grey-dim); text-transform: uppercase;
+.chambre-hint{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.18em;
+  color:rgba(255,255,255,0.18);text-transform:uppercase;
+  text-align:center;margin-top:0.8rem;
 }
 
-/* ─── LINKS ──────────────────────────────────── */
-.links-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1px; background: var(--grey-rule);
-  border: 1px solid var(--grey-rule);
-  margin-top: 3rem;
+/* ── BIO ── */
+.bio-portrait-wrap{
+  width:100%;margin-bottom:0;line-height:0;
 }
-.link-tile {
-  background: var(--black); padding: 2rem 1.8rem;
-  text-decoration: none; transition: background 0.25s;
-  display: flex; flex-direction: column; justify-content: space-between;
-  min-height: 120px;
+.bio-portrait-wrap img{
+  width:100%;height:auto;display:block;
+  /* no crop */
 }
-.link-tile:hover { background: #0c0c0c; }
-.link-tile-title {
-  font-size: 1rem; font-style: italic; color: var(--off-white);
-  margin-bottom: 0.4rem;
+.bio-fig-label{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.16em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+  padding:0.7rem 0 2rem;
+  border-bottom:1px solid var(--grey-rule);
+  margin-bottom:2rem;
 }
-.link-tile-sub {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
-  color: var(--grey-dim); text-transform: uppercase;
+.bio-text p{
+  font-size:1.05rem;line-height:1.88;
+  color:rgba(255,255,255,0.55);margin-bottom:1.3rem;
 }
-.link-arrow {
-  font-family: var(--font-mono); font-size: 11px; color: var(--accent);
-  align-self: flex-end; margin-top: 1rem;
+.bio-emails{
+  display:flex;gap:1.5rem;flex-wrap:wrap;margin:1.5rem 0;
+}
+.bio-emails a{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;
+  color:var(--accent);text-decoration:none;
+}
+.bio-emails a:hover{text-decoration:underline;}
+
+/* ── SITES ── */
+.sites-hierarchy{display:flex;flex-direction:column;gap:0;}
+.site-primary{
+  display:flex;align-items:baseline;gap:1.2rem;
+  border-top:1px solid var(--grey-rule);padding:1rem 0;
+}
+.site-primary a{
+  font-size:1.05rem;font-style:italic;color:var(--off-white);
+  text-decoration:none;transition:color 0.2s;
+}
+.site-primary a:hover{color:var(--accent);}
+.site-desc{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+}
+.site-children{padding-left:2rem;display:flex;flex-direction:column;gap:0;}
+.site-child{
+  display:flex;align-items:baseline;gap:0.8rem;
+  border-top:1px solid rgba(255,255,255,0.05);padding:0.7rem 0;
+}
+.site-child::before{content:'·';color:rgba(255,255,255,0.18);flex-shrink:0;}
+.site-child a{
+  font-size:0.95rem;color:rgba(255,255,255,0.45);
+  text-decoration:none;transition:color 0.2s;
+}
+.site-child a:hover{color:var(--off-white);}
+
+/* ── LINKS GRID ── */
+.links-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:1px;background:var(--grey-rule);
+  border:1px solid var(--grey-rule);
+  margin-top:3rem;
+}
+.link-tile{
+  background:var(--black);padding:1.8rem 1.6rem;
+  text-decoration:none;transition:background 0.2s;
+  display:flex;flex-direction:column;justify-content:space-between;
+  min-height:110px;
+}
+.link-tile:hover{background:#0b0b0b;}
+.link-tile-title{font-size:0.98rem;font-style:italic;color:var(--off-white);margin-bottom:0.3rem;}
+.link-tile-sub{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+}
+.link-arrow{
+  font-family:var(--font-mono);font-size:10px;color:var(--accent);
+  align-self:flex-end;margin-top:1rem;
 }
 
-/* ─── FOOTER ─────────────────────────────────── */
-footer {
-  max-width: 1200px; margin: 0 auto;
-  padding: 3.5rem 2.5rem 4rem;
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 3rem; align-items: start;
+/* ── FOOTER ── */
+.footer-wrap{
+  border-top:1px solid var(--grey-rule);
+  max-width:1100px;margin:0 auto;
+  padding:3.5rem 2.8rem 5rem;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:3rem;
 }
-.footer-brand {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
-  color: var(--grey-dim); text-transform: uppercase; margin-bottom: 1rem;
+.footer-brand{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.18);text-transform:uppercase;margin-bottom:1rem;
 }
-.footer-name {
-  font-size: 1.2rem; font-style: italic; color: var(--off-white);
-  margin-bottom: 0.4rem;
+.footer-name{font-size:1.2rem;font-style:italic;color:var(--off-white);margin-bottom:0.4rem;}
+.footer-role{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;line-height:2;
 }
-.footer-role {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
-  color: var(--grey-dim); text-transform: uppercase; line-height: 1.8;
+.footer-links{list-style:none;}
+.footer-links li{padding:0.42rem 0;border-bottom:1px solid var(--grey-rule);}
+.footer-links a{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.35);text-decoration:none;text-transform:uppercase;
+  transition:color 0.2s;
 }
-.footer-links { list-style: none; }
-.footer-links li {
-  padding: 0.45rem 0; border-bottom: 1px solid var(--grey-rule);
-}
-.footer-links a {
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
-  color: var(--grey-light); text-decoration: none; text-transform: uppercase;
-  transition: color 0.2s;
-}
-.footer-links a:hover { color: var(--accent); }
-.footer-copy {
-  font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.15em;
-  color: var(--grey-dim); text-transform: uppercase; margin-top: 1.5rem;
-  line-height: 2;
+.footer-links a:hover{color:var(--accent);}
+.footer-copy{
+  font-family:var(--font-mono);font-size:8px;letter-spacing:0.14em;
+  color:rgba(255,255,255,0.15);text-transform:uppercase;
+  margin-top:1.5rem;line-height:2;
 }
 
-/* ─── HORIZONTAL RULE ─────────────────────────── */
-hr {
-  border: none; border-top: 1px solid var(--grey-rule);
-}
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.visible{opacity:1;transform:none;}
 
-/* ─── SCROLL REVEAL ──────────────────────────── */
-.reveal {
-  opacity: 0; transform: translateY(30px);
-  transition: opacity 0.75s ease, transform 0.75s ease;
-}
-.reveal.visible { opacity: 1; transform: none; }
-
-/* ─── MOBILE ──────────────────────────────────── */
-@media (max-width: 768px) {
-  nav { padding: 1rem 1.2rem; }
-  .nav-links { display: none; }
-  .hero { padding: 0 1.2rem 3rem; }
-  section { padding: 3.5rem 1.2rem; }
-  .statement-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-  .statement-sidebar { position: static; }
-  .interactive-wrap { grid-template-columns: 1fr; }
-  .bio-grid { grid-template-columns: 1fr; }
-  .bio-portrait { width: 150px; }
-  footer { grid-template-columns: 1fr; gap: 2rem; }
-  .stills-strip { grid-template-columns: repeat(3, 1fr); }
-  .work-card.span-2 { grid-column: span 1; }
-  .hero-meta { gap: 1.5rem; }
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:1rem 1.2rem;}
+  .nav-links{display:none;}
+  .hero{padding:7rem 1.2rem 4rem;}
+  .section{padding:4rem 1.2rem;}
+  .statement-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .statement-sidebar{position:static;}
+  .stills-row{grid-template-columns:repeat(3,1fr);}
+  .footer-wrap{grid-template-columns:1fr;gap:2rem;}
+  .hero-meta{gap:1.2rem;}
 }
 </style>
 </head>
-
 <body>
 
 <!-- LOADER -->
@@ -562,57 +464,47 @@ hr {
   <ul class="nav-links">
     <li><a href="#statement">Statement</a></li>
     <li><a href="#works">Works</a></li>
-    <li><a href="#installation">Installation</a></li>
     <li><a href="#bio">Artist</a></li>
     <li><a href="#sites">Sites</a></li>
   </ul>
   <a href="https://technosomaticarchitecture.vercel.app" class="nav-back" target="_blank">← Main Site</a>
 </nav>
 
-<!-- HERO -->
+<!-- ═══ HERO — WARM WHITE ═══ -->
 <div class="hero">
-  <!-- background collage from repo images -->
-  <div class="hero-bg">
-    <img src="MaleOdalisque.jpg" alt="">
-    <img src="Corpus 123.jpg" alt="">
+  <div class="hero-img-wrap">
+    <img src="Picture1.png" alt="The Technosomatic Architecture — Homunculus Diagram">
   </div>
-
-  <span class="hero-eyebrow">ARC Gallery · Athena Fund · Solo Exhibition · Chicago · September 2026</span>
-
-  <h1 class="hero-title">
-    Technosomatic<br>
-    Cyberfeminism 2.0
-    <span>Nataša Bajc</span>
-  </h1>
-
-  <div class="hero-rule"></div>
-
-  <div class="hero-meta">
-    <div class="hero-meta-item">
-      <span class="hero-meta-label">Venue</span>
-      <span class="hero-meta-value">ARC Gallery, Chicago</span>
-    </div>
-    <div class="hero-meta-item">
-      <span class="hero-meta-label">Programme</span>
-      <span class="hero-meta-value">Athena Fund Solo Exhibition</span>
-    </div>
-    <div class="hero-meta-item">
-      <span class="hero-meta-label">Date</span>
-      <span class="hero-meta-value">September 2026</span>
-    </div>
-    <div class="hero-meta-item">
-      <span class="hero-meta-label">Works</span>
-      <span class="hero-meta-value">10 Items</span>
-    </div>
-    <div class="hero-meta-item">
-      <span class="hero-meta-label">Framework</span>
-      <span class="hero-meta-value">Technosomatic Architecture</span>
+  <div class="hero-text">
+    <span class="hero-eyebrow">ARC Gallery · Athena Fund · Solo Exhibition · Chicago · September 2026</span>
+    <h1 class="hero-title">
+      Technosomatic<br>Cyberfeminism 2.0
+      <span>Nataša Bajc</span>
+    </h1>
+    <div class="hero-rule"></div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Venue</span>
+        <span class="hero-meta-value">ARC Gallery, Chicago</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Programme</span>
+        <span class="hero-meta-value">Athena Fund</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Date</span>
+        <span class="hero-meta-value">September 2026</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Works</span>
+        <span class="hero-meta-value">10 Items</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- STATEMENT -->
-<section id="statement">
+<!-- ═══ STATEMENT ═══ -->
+<div class="section" id="statement">
   <span class="section-number">01. Artist Statement</span>
   <div class="statement-grid reveal">
     <div class="statement-sidebar">
@@ -628,289 +520,299 @@ hr {
       </div>
     </div>
     <div class="statement-body">
-      <p>
-        <strong>Technosomatic.</strong> Two words fused into a single diagnostic instrument. The digital infrastructure that mediates human experience collides with the body — the flesh, the primary site of knowing. Between them: the unthought known.<sup>1</sup> The body already knows what the digital age is doing to it.
-      </p>
-      <p>
-        This exhibition refuses the asymmetry that has defined Western visual culture for centuries. Breasts are everywhere. The phallus remains a taboo. Female objectification is so woven into culture it has become invisible — a background condition requiring no justification. Male objectification is actively disallowed, treated as transgressive, even dangerous.<sup>2</sup>
-      </p>
+      <p><strong>Technosomatic.</strong> Two words fused into a single diagnostic instrument. The digital infrastructure that mediates human experience collides with the body — the flesh, the primary site of knowing. Between them: the unthought known.<sup>1</sup> The body already knows what the digital age is doing to it.</p>
+      <p>This exhibition refuses the asymmetry that has defined Western visual culture for centuries. Breasts are everywhere. The phallus remains a taboo. Female objectification is so woven into culture it has become invisible — a background condition requiring no justification. Male objectification is actively disallowed, treated as transgressive, even dangerous.<sup>2</sup></p>
       <div class="blockquote-accent">
         Technosomatic Cyberfeminism 2.0 reverses this mechanism. Not to equalize. To expose.
       </div>
-      <p>
-        The female gaze becomes the instrument of rendering the male body into visibility — clinical, unblinking, and permanent.<sup>3</sup> In this work, the gaze is not merely a critical position: it is structural. It is the apparatus through which the body is processed, translated, and returned as data, as image, as thing.<sup>4</sup>
-      </p>
-      <p>
-        The ten works in this exhibition move across media — digital print on canvas, holographic installation, video, and interactive gaze-tracking — to map a single inquiry: what happens when the female gaze becomes the instrument of rendering, and the male body becomes the archive?<sup>5</sup> The body passes through procedures: photographed, processed through AI, printed, painted over, sliced into holograms, looped, projected. Each procedure adds a mark. Each mark is a form of knowledge the eye-tracker will confirm the viewer already knew.<sup>6</sup>
-      </p>
-      <p>
-        Technosomatic Architecture is the methodological core: AI deployed not as an aesthetic filter but as a phenomenological instrument — a device for measuring where the body's knowledge diverges from the mind's.<sup>7</sup> The works do not depict this divergence. They instantiate it.
-      </p>
+      <p>The female gaze becomes the instrument of rendering the male body into visibility — clinical, unblinking, and permanent.<sup>3</sup> In this work, the gaze is not merely a critical position: it is structural. It is the apparatus through which the body is processed, translated, and returned as data, as image, as thing.<sup>4</sup></p>
+      <p>The ten works in this exhibition move across media — digital print on canvas, holographic installation, video, and interactive gaze-tracking — to map a single inquiry: what happens when the female gaze becomes the instrument of rendering, and the male body becomes the archive?<sup>5</sup> The body passes through procedures: photographed, processed through AI, printed, painted over, sliced into holograms, looped, projected. Each procedure adds a mark. Each mark is a form of knowledge the eye-tracker will confirm the viewer already knew.<sup>6</sup></p>
+      <p>Technosomatic Architecture is the methodological core: AI deployed not as an aesthetic filter but as a phenomenological instrument — a device for measuring where the body's knowledge diverges from the mind's.<sup>7</sup> The works do not depict this divergence. They instantiate it.</p>
     </div>
   </div>
-</section>
+</div>
 
-<!-- WORKS -->
-<section id="works">
+<!-- ═══ WORKS ═══ -->
+<div class="section" id="works">
   <span class="section-number">02. Exhibition Works</span>
-  <h2 class="section-heading">10 Works in <em>Exhibition</em></h2>
-  <p class="works-intro">
-    Digital print on canvas, found object sculpture, holographic installation, interactive gaze-tracking, and video — across a single inquiry into the female gaze as rendering instrument.
-  </p>
+  <h2 class="section-heading">10 Works · <em>Technosomatic Cyberfeminism 2.0</em></h2>
 
-  <div class="works-grid reveal">
-
-    <!-- 01 Male Odalisque -->
-    <div class="work-card span-2 featured">
-      <div class="work-img-wrap">
-        <img src="MaleOdalisque.jpg" alt="Male Odalisque">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 01</p>
-        <p class="work-title">Male Odalisque</p>
-        <p class="work-medium">Digital print on canvas, painted over areas · 48″h × 43″w · 2026</p>
-      </div>
+  <!-- ── 01 MALE ODALISQUE ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 01</span>
+    <div class="work-entry-img">
+      <img src="MaleOdalisque.jpg" alt="Male Odalisque">
     </div>
-
-    <!-- 02–04 Triptych -->
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <img src="Corpus 123.jpg" alt="Triptych Corpus I">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 02</p>
-        <p class="work-title">Triptych Corpus I</p>
-        <p class="work-medium">Digital print on canvas · 30″h × 40″w</p>
-      </div>
+    <p class="work-fig-label">Fig. 01 — Male Odalisque · Digital print on canvas, painted over areas · 48″h × 43″w · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print on canvas, painted over areas</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Dimensions</span><span class="work-meta-val">48″h × 43″w</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic — Rendered</span></div>
     </div>
-
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <img src="Corpus 123.jpg" alt="Triptych Corpus II">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 03</p>
-        <p class="work-title">Triptych Corpus II</p>
-        <p class="work-medium">Digital print on canvas · 30″h × 40″w</p>
-      </div>
+    <h3>Male Odalisque</h3>
+    <div class="work-statement">
+      <p>The odalisque is a figure of the Western art historical archive: passive, horizontal, available — arranged for a gaze that is always assumed to be male. This work performs the inversion. The figure is male. The gaze that produces and holds the image is female. The historical pose — reclining, exposed, arranged — does not become ironic in this reversal. It becomes exact.</p>
+      <p>Amber and ochre push the body toward terracotta, something fired and permanent. The architectural cold of the background reads against the radiated warmth of the flesh. The pose is simultaneously vulnerable and unselfconscious — not performing availability but inhabiting it. The glasses insist on a particular Tuesday afternoon. That specificity — not the eternal nude but the actual person, on an ordinary day — is the sharpest edge of the work.</p>
+      <p>The paint applied over the print is not decoration. It is the mark of a second procedure: the image is made, then it is touched again. The body passes through two processes and is returned altered by both. What remains is not documentation. It is the record of a rendering.</p>
     </div>
-
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <img src="Corpus 123.jpg" alt="Triptych Corpus III">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 04</p>
-        <p class="work-title">Triptych Corpus III</p>
-        <p class="work-medium">Digital print on canvas · 30″h × 40″w</p>
-      </div>
-    </div>
-
-    <!-- 05 Otium -->
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <img src="Otium.jpg" alt="Otium">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 05</p>
-        <p class="work-title">Otium</p>
-        <p class="work-medium">Digital print · 30″h × 40″w · 2026</p>
-      </div>
-    </div>
-
-    <!-- 06 TA Print -->
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <img src="OdalisqueProtocol.jpg" alt="Odalisque Protocol">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 06</p>
-        <p class="work-title">Odalisque Protocol</p>
-        <p class="work-medium">Digital print on canvas · Technosomatic Architecture</p>
-      </div>
-    </div>
-
-    <!-- 07 Descending Data -->
-    <div class="work-card span-2 featured">
-      <div class="work-img-wrap">
-        <div class="work-img-placeholder">
-          <span>Descending Data · Holographic Installation</span>
-        </div>
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 07</p>
-        <p class="work-title">Descending Data: Portrait of an Ego (10 Slices)</p>
-        <p class="work-medium">Plexiglass, clear mylar print, edge-lit LED · 36″h + 6″ base · 10 slices · 2026</p>
-      </div>
-    </div>
-
-    <!-- 08 Video -->
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <img src="5.png" alt="Male Orgasm Study">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 08</p>
-        <p class="work-title">Corpus Solus</p>
-        <p class="work-medium">Video · MP4, looped · AI-tonal · 2026</p>
-      </div>
-    </div>
-
-    <!-- 09 Gaze -->
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <div class="work-img-placeholder">
-          <span>Selection · Interactive</span>
-        </div>
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 09</p>
-        <p class="work-title">Selection</p>
-        <p class="work-medium">Interactive · Tobii EyeX · Short-throw projector · Unity</p>
-      </div>
-    </div>
-
-    <!-- 10 reterritorialization print -->
-    <div class="work-card">
-      <div class="work-img-wrap">
-        <img src="reterritorialization.jpg" alt="Reterritorialization">
-      </div>
-      <div class="work-info">
-        <p class="work-num">RENDERED · 10</p>
-        <p class="work-title">Reterritorialization</p>
-        <p class="work-medium">Digital print on canvas · 2026</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- INTERACTIVE INSTALLATION -->
-<section id="installation">
-  <span class="section-number">03. Interactive Installation</span>
-  <div class="interactive-wrap reveal">
-
-    <div class="gaze-demo-block">
-      <div class="gaze-container" id="gazeContainer">
-        <img src="5.png" alt="Gaze Demo" id="gazeBase">
-        <canvas id="gazeCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
-      </div>
-      <p class="gaze-label">Move cursor — your gaze renders the image</p>
-    </div>
-
-    <div class="interactive-text">
-      <h2 class="section-heading"><em>Selection</em></h2>
-      <p>
-        Where you look becomes sharp. Everything else blurs. This is the operational logic of <em>Selection</em>: the female gaze renders the male body into clarity, one viewer at a time. The image is identical for every viewer. What changes is which part of it they choose to bring into focus.
-      </p>
-      <p>
-        The eye-tracker captures the gaze vector in real time; a Unity shader maps it to a sharp window within a blurred full-frame projection of the male nude. The technology makes visible what is always already operating: attention as an act of rendering, and rendering as an act of power.
-      </p>
-      <p>
-        Ten people. Ten selections. The gaze is never uniform, never predictable, never repeatable. The archive of where women look is the work itself.
-      </p>
-      <div class="work-specs">
-        <div class="spec-row">
-          <span class="spec-key">Technology</span>
-          <span class="spec-val">Tobii EyeX eye-tracker</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-key">Projection</span>
-          <span class="spec-val">Short-throw projector</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-key">Software</span>
-          <span class="spec-val">Unity · Custom C# shader</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-key">Subject</span>
-          <span class="spec-val">Declan James Jones</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-key">Precedent</span>
-          <span class="spec-val">LERATA Festival, 2016</span>
-        </div>
-        <div class="spec-row">
-          <span class="spec-key">Process</span>
-          <span class="spec-val">Neural painterly processing</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- VIDEO STILLS / PRECEDENT -->
-<section>
-  <span class="section-number">04. Video Work & Precedent</span>
-  <h2 class="section-heading reveal">Corpus Solus · <em>Video Stills</em></h2>
-  <div class="stills-strip reveal">
-    <div class="still-item">
-      <img src="1.png" alt="Still 01">
-      <span class="still-label">01</span>
-    </div>
-    <div class="still-item">
-      <img src="2.png" alt="Still 02">
-      <span class="still-label">02</span>
-    </div>
-    <div class="still-item">
-      <img src="3.png" alt="Still 03">
-      <span class="still-label">03</span>
-    </div>
-    <div class="still-item">
-      <img src="4.png" alt="Still 04">
-      <span class="still-label">04</span>
-    </div>
-    <div class="still-item">
-      <img src="5.png" alt="Still 05">
-      <span class="still-label">05</span>
-    </div>
+    <hr class="work-divider">
   </div>
 
-  <div class="precedent-block reveal">
-    <div class="precedent-year">2016</div>
-    <h3>Mind Map: Gaze as Interface · LERATA Festival</h3>
-    <p>
-      Los Angeles, February 2016. Eye-tracking interactive installation premiered at LERATA Festival for Emerging and Innovative Art. The Tobii EyeX eye-tracker rendered a blank wall as the visualization of internal attention: where the viewer looked, the projector rendered light. The viewer's gaze was the instrument of creation. A decade of expertise in eye-tracking technology, interactive installation, and the gaze as primary artistic medium precedes <em>Selection</em>.
-    </p>
-    <a href="https://natashabajc.com/2018/05/09/interactive-art/" target="_blank" class="precedent-link">
-      Read documentation ↗
-    </a>
-  </div>
-</section>
-
-<!-- BIO -->
-<section id="bio">
-  <span class="section-number">05. Artist</span>
-  <div class="bio-grid reveal">
-    <div class="bio-portrait">
-      <img src="portrait.jpg" alt="Natasha Bajc" onerror="this.style.display='none'">
+  <!-- ── 02 RETERRITORIALIZATION ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 02</span>
+    <div class="work-entry-img">
+      <img src="reterritorialization.jpg" alt="Reterritorialization">
     </div>
+    <p class="work-fig-label">Fig. 02 — Reterritorialization · Digital print on canvas · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print on canvas</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic Architecture</span></div>
+    </div>
+    <h3>Reterritorialization</h3>
+    <div class="work-statement">
+      <p>The body as territory: claimed, mapped, re-inscribed. Reterritorialization is the Deleuzian moment at which a destabilized system acquires new form — not returning to its origin but settling into a structure it did not previously inhabit. This work applies that logic to flesh.</p>
+      <p>The digital process runs the body through a cartographic procedure. What returns is not the body as it was but the body as newly bounded — lines of demarcation that were always implicit made legible. The work positions the Technosomatic framework at its most spatial: the body as a site that can be occupied, re-drawn, and inhabited under new terms. The female gaze performs the survey. The canvas holds the resulting map.</p>
+    </div>
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 03 CORPUS I ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 03</span>
+    <div class="work-entry-img">
+      <img src="Corpus_I.jpg" alt="Corpus I">
+    </div>
+    <p class="work-fig-label">Fig. 03 — Corpus I · Digital print on canvas, painted over areas · 30″h × 40″w · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print on canvas, painted over areas</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Dimensions</span><span class="work-meta-val">30″h × 40″w</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic — Rendered</span></div>
+    </div>
+    <h3>Corpus I</h3>
+    <div class="work-statement">
+      <p>The first state is not rest. The figure has contracted into itself — arms folded across the body, the frame occupied minimally, a teal ground accumulating beneath like something pooling at the base of a wall. The body is not collapsed. It is gathered. What reads as withdrawal is also preparation: the protective layer that precedes exposure, the anticipatory stillness of a body that knows what being seen costs and has not yet decided to pay it. The chartreuse ground presses in from all sides. The body does not push back. It holds.</p>
+    </div>
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 04 CORPUS II ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 04</span>
+    <div class="work-entry-img">
+      <img src="Corpus_II.jpg" alt="Corpus II">
+    </div>
+    <p class="work-fig-label">Fig. 04 — Corpus II · Digital print on canvas, painted over areas · 30″h × 40″w · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print on canvas, painted over areas</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Dimensions</span><span class="work-meta-val">30″h × 40″w</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic — Rendered</span></div>
+    </div>
+    <h3>Corpus II</h3>
+    <div class="work-statement">
+      <p>The second state is the confrontation — but the confrontation is not aggressive. The figure is fully frontal, symmetrical, centered: nothing deflected, nothing withheld, nothing arranged to manage what is seen. The genitals are present. The torso is upright. The face is still. This is the body at maximum exposure, and it is also the body at maximum composure. The two conditions do not contradict each other. They are the same state.</p>
+      <p>The rendering process is most legible here: the AI-etched skin reads as geological, as something that has been worked at depth rather than surface. The body endures the procedure — the photography, the processing, the printing, the second touch of paint — with the same stillness it brings to being seen. The chartreuse ground presses in from all sides. The body does not accommodate it. It simply occupies the center. Power is not performed here. It is structural.</p>
+    </div>
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 05 CORPUS III ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 05</span>
+    <div class="work-entry-img">
+      <img src="Corpus_III.jpg" alt="Corpus III">
+    </div>
+    <p class="work-fig-label">Fig. 05 — Corpus III · Digital print on canvas, painted over areas · 30″h × 40″w · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print on canvas, painted over areas</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Dimensions</span><span class="work-meta-val">30″h × 40″w</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic — Rendered</span></div>
+    </div>
+    <h3>Corpus III</h3>
+    <div class="work-statement">
+      <p>The third state is not conclusion but arrival. The figure is centered, frontal, knees open — a position that in classical anatomy diagrams marks the body's full disclosure, the pose of the medical examination or the spiritual surrender. Here it carries neither clinical detachment nor submission. The body is simply present: weight distributed, arms resting, face calm. The chartreuse ground that was hostile in Corpus I and contested in Corpus II is now simply a field the body inhabits. The transformation across the three works is not narrative. It is somatic. The body has moved through its own states and arrived at this one: open, meditative, complete.</p>
+    </div>
+
+    <!-- TRIPTYCH SUB-ITEM -->
+    <div class="sub-item">
+      <span class="sub-item-label">Sub-item · 05a</span>
+      <div class="work-entry-img" style="margin-bottom:0;">
+        <img src="Corpus 123.jpg" alt="Triptych — Corpus I, II, III">
+      </div>
+      <p class="work-fig-label" style="margin-top:0.7rem;">Fig. 05a — Triptych · Corpus I, II, III · 30″h × 120″w installed · 2026</p>
+      <h4>Triptych</h4>
+      <p>Installed together as a single horizontal field, the three works have a clear center — Corpus II, the confrontation, the body at maximum exposure and maximum stillness — but no fixed direction of reading. The sequence can move outward from center to the closed anticipation of Corpus I, or outward to the meditative arrival of Corpus III. It can retreat from either edge back toward the center. It can reverse. The triptych format carries its art historical weight: devotional, sequential, cumulative. Here it is stripped of linearity. The chartreuse ground runs unbroken across all three, refusing to separate what the body inhabits from what surrounds it. What the sequence proposes is not a story. It is a field — with a center that holds, and edges that remain available in any direction.</p>
+    </div>
+
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 06 ODALISQUE PROTOCOL ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 06</span>
+    <div class="work-entry-img">
+      <img src="OdalisqueProtocol.jpg" alt="Odalisque Protocol">
+    </div>
+    <p class="work-fig-label">Fig. 06 — Odalisque Protocol · Digital print on canvas · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print on canvas</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic Architecture</span></div>
+    </div>
+    <h3>Odalisque Protocol</h3>
+    <div class="work-statement">
+      <p>A protocol is a set of rules governing the transmission and formatting of data between systems. The Odalisque Protocol applies this logic to the pose: the conventions of the reclining figure — the angle of display, the arrangement of the body for reception — become legible as a transmission standard, a set of instructions for how the body should present itself to the gaze that receives it.</p>
+      <p>The work returns to the figure of Male Odalisque and treats it as a diagram rather than a representation. Where Male Odalisque is a specific person on a specific afternoon, Odalisque Protocol is the rule that governs such arrangements — the structural condition extracted from the singular instance. Together the two works map the relation between the universal convention and its particular instantiation in flesh.</p>
+    </div>
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 07 RESTRAINT SYSTEM ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 07</span>
+    <div class="work-entry-img">
+      <img src="RestraintSystem.jpg" alt="Restraint System">
+    </div>
+    <p class="work-fig-label">Fig. 07 — Restraint System · Digital print on canvas · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print on canvas</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic Architecture</span></div>
+    </div>
+    <h3>Restraint System</h3>
+    <div class="work-statement">
+      <p>The most direct work in the exhibition. A restraint system is an engineering term: the assembly of components that holds a body in position under force. Applied to the body, the term makes visible what is normally invisible — that the body in display is already a body held, that the poses of availability and exposure are positions maintained, not natural states arrived at.</p>
+      <p>The digital process introduces its own restraint: the body processed through AI renders the flesh as a system of pressures and tensions made legible. What the eye reads as texture is the record of a body under load. The work is the darkest in the exhibition — not in palette but in implication. It makes explicit what the other works operate through: that the gaze is always also a form of constraint, and that to be rendered is to be held in place long enough to be seen.</p>
+    </div>
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 08 OTIUM ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 08</span>
+    <div class="work-entry-img">
+      <img src="Otium.jpg" alt="Otium">
+    </div>
+    <p class="work-fig-label">Fig. 08 — Otium · Digital print · 30″h × 40″w · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Medium</span><span class="work-meta-val">Digital print</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Dimensions</span><span class="work-meta-val">30″h × 40″w</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Series</span><span class="work-meta-val">Technosomatic — Rendered</span></div>
+    </div>
+    <h3>Otium</h3>
+    <div class="work-statement">
+      <p>Otium: the Roman concept of private leisure — time spent on oneself, away from public obligation, slightly idle, slightly shameless. The counterpart to negotium, the public sphere of productivity and duty. Otium is not rest. It is the condition of being unavailable to the demands of others while remaining fully present to oneself.</p>
+      <p>The work is a close-up so extreme the body becomes terrain: cracked mosaic, heat map, the skin read as geological surface. The digital process turns the explicit into the abstract and the abstract back into the intimate. What might be immediately legible as body becomes landscape, then resolves back into flesh. The body at its most private, in the middle of an ordinary afternoon. After the structural exposures of Restraint System and Odalisque Protocol, Otium offers a different register: not the body under the gaze of the work, but the body in the act of being — temporarily, privately, unobserved.</p>
+    </div>
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 09 THE GLITCH OF THE REAL ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 09</span>
+    <div class="video-placeholder">
+      <div class="video-placeholder-inner">
+        <span>Video Work — In Production</span>
+        <span style="color:rgba(255,255,255,0.1);font-size:11px;margin-top:0.3rem;">The Glitch of the Real</span>
+      </div>
+    </div>
+    <p class="work-fig-label">Fig. 09 — The Glitch of the Real · Video · MP4, looped · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Format</span><span class="work-meta-val">MP4, looped · Side-by-side</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Display</span><span class="work-meta-val">Monitor · Any scale</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Date</span><span class="work-meta-val">2026</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Status</span><span class="work-meta-val">In production</span></div>
+    </div>
+    <h3>The Glitch of the Real</h3>
+    <div class="work-statement">
+      <p>The glitch is not an error. It is the moment the system exceeds its own architecture — the instant when the body refuses the smooth operation of its own representation and something involuntary breaks through. In Lacanian terms, the Real is precisely what cannot be symbolized: the remainder that resists integration into the digital interface's promise of clean, managed experience.</p>
+      <p>The work presents the male body in the private act of orgasm — the body's primary glitch, the moment when the social mask is structurally suspended and flesh enacts what the digital register can only simulate. Presented side by side in the AI-tonal register of the series: the same event, two angles, the doubling producing a clinical distance that the content refuses to honor. The loop holds what cannot be held. The body twitches against its own containment. Witnessed by no one. Witnessed by anyone who stands in front of it.</p>
+    </div>
+    <hr class="work-divider">
+  </div>
+
+  <!-- ── 10 CHAMBRE SECRÈTE ── -->
+  <div class="work-entry reveal">
+    <span class="work-entry-number">RENDERED · 10</span>
+    <div class="chambre-wrap" id="chambreWrap">
+      <img src="5.png" alt="Chambre Secrète" id="chambreBase">
+      <canvas id="chambreCanvas"></canvas>
+      <div class="chambre-cursor" id="chambreCursor"></div>
+    </div>
+    <p class="chambre-hint">Enter the image — your gaze opens the chamber</p>
+    <p class="work-fig-label" style="margin-top:1rem;">Fig. 10 — Chambre Secrète · Interactive · Tobii EyeX · Short-throw projector · Unity · 2026</p>
+    <div class="work-meta-row">
+      <div class="work-meta-pair"><span class="work-meta-key">Technology</span><span class="work-meta-val">Tobii EyeX eye-tracker</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Projection</span><span class="work-meta-val">Short-throw projector</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Software</span><span class="work-meta-val">Unity · Custom C# shader</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Subject</span><span class="work-meta-val">Declan James Jones</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Window</span><span class="work-meta-val">80 × 80 px peephole</span></div>
+      <div class="work-meta-pair"><span class="work-meta-key">Precedent</span><span class="work-meta-val">LERATA Festival, 2016</span></div>
+    </div>
+    <h3>Chambre Secrète</h3>
+    <div class="work-statement">
+      <p>The secret room. The chamber that exists only when someone looks for it — and only shows what the looker chooses to find. The full image is present and entirely unavailable: a blurred, dimmed projection of the male nude, intact and inaccessible. The eye-tracker reads the viewer's gaze vector in real time and opens an 80-pixel window of clarity at the exact point of attention. Everywhere else: blur. At the point of looking: the image, sharp and immediate.</p>
+      <p>The Chambre Secrète makes the mechanics of voyeurism explicit. The desire to see produces the image. Without the gaze, there is no picture — only a blurred field that implies something it refuses to show. The viewer becomes aware of their own looking in the act of looking: the act of attending to the image is the act that constitutes it. The peephole is not a limitation. It is the work's thesis made spatial.</p>
+      <p>The image changes with each viewer. Ten viewers produce ten different Chambre Secrètes, ten different archives of where women look when they are given the instrument to look without consequence. The aggregate is never displayed. Each act of looking is private, temporary, and unrepeatable. The chamber closes when the viewer leaves.</p>
+    </div>
+
+    <!-- stills 1–5 -->
+    <div class="stills-row">
+      <div class="still-item">
+        <img src="1.png" alt="Source image 01">
+      </div>
+      <div class="still-item">
+        <img src="2.png" alt="Source image 02">
+      </div>
+      <div class="still-item">
+        <img src="3.png" alt="Source image 03">
+      </div>
+      <div class="still-item">
+        <img src="4.png" alt="Source image 04">
+      </div>
+      <div class="still-item">
+        <img src="5.png" alt="Source image 05">
+      </div>
+    </div>
+    <p class="still-cap" style="margin-top:0.8rem;">Neural-processed source images · Subject: Declan James Jones · 2026</p>
+
+    <hr class="work-divider">
+  </div>
+
+</div><!-- /works -->
+
+<!-- ═══ BIO ═══ -->
+<div class="section" id="bio">
+  <span class="section-number">03. Artist</span>
+  <h2 class="section-heading reveal">Nataša <em>Bajc</em></h2>
+
+  <div class="reveal">
+    <div class="bio-portrait-wrap">
+      <img src="MePortrait2.jpg" alt="Natasha Bajc">
+    </div>
+    <p class="bio-fig-label">Natasha Bajc · Los Angeles · 2026</p>
     <div class="bio-text">
-      <h2 class="section-heading" style="margin-bottom:1.2rem;">Nataša <em>Bajc</em></h2>
-      <p>
-        Natasha Bajc is a Serbian-born, Los Angeles-based artist, architect, and researcher working at the intersection of the body, technology, and digital process. Her practice operates under the framework of Technosomatic Architecture — an inquiry into how the body is translated, processed, and returned altered through digital and material systems.
-      </p>
-      <p>
-        Bajc holds advanced training in architecture and computer science and has taught at the collegiate level in Los Angeles, with affiliations including SCI-Arc, UCLA, and USC. She is Co-Founder and CEO of Nexus Hestia Technologies, developing research at the intersection of artificial intelligence and spatial practice.
-      </p>
-      <p>
-        She gave one of the first TEDx talks in Belgrade in 2010, and participated in the Venice Biennale of Architecture in 2018. <em>The Loop of Being</em> was exhibited at the Beijing Biennale, 2025.
-      </p>
-      <p>
-        Her current body of work spans digital print on canvas, found object sculpture, holographic installation, large-scale interactive installation, and video. Bajc lives and works in Los Angeles.
-      </p>
+      <p>Natasha Bajc is a Serbian-born, Los Angeles-based artist, architect, and researcher working at the intersection of the body, technology, and digital process. Her practice operates under the framework of Technosomatic Architecture — an inquiry into how the body is translated, processed, and returned altered through digital and material systems.</p>
+      <p>Bajc holds advanced training in architecture and computer science and has taught at the collegiate level in Los Angeles, with affiliations including SCI-Arc, UCLA, and USC. She is Co-Founder and CEO of Nexus Hestia Technologies, developing research at the intersection of artificial intelligence and spatial practice.</p>
+      <p>She gave one of the first TEDx talks in Belgrade in 2010, and participated in the Venice Biennale of Architecture in 2018. <em>The Loop of Being</em> was exhibited at the Beijing Biennale, 2025.</p>
+      <p>Her current body of work spans digital print on canvas, found object sculpture, holographic installation, large-scale interactive installation, and video. Bajc lives and works in Los Angeles.</p>
       <div class="bio-emails">
         <a href="mailto:natasha@natashabajc.com">natasha@natashabajc.com</a>
         <a href="mailto:natasha.bajc@nexushestia.com">natasha.bajc@nexushestia.com</a>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- SITES -->
-<section id="sites">
-  <span class="section-number">06. Websites</span>
+<!-- ═══ SITES ═══ -->
+<div class="section" id="sites">
+  <span class="section-number">04. Websites</span>
   <h2 class="section-heading reveal">Online <em>Exhibition Record</em></h2>
 
   <div class="sites-hierarchy reveal">
@@ -925,7 +827,7 @@ hr {
       </div>
       <div class="site-child">
         <a href="https://technosomatic-holoscene.vercel.app/" target="_blank">Descending Data: Portrait of an Ego</a>
-        <span class="site-desc">Holoscene · Work-specific site</span>
+        <span class="site-desc">Holoscene</span>
       </div>
       <div class="site-child">
         <a href="https://technosomatic-rendered.vercel.app/" target="_blank">Technosomatic — Rendered</a>
@@ -946,180 +848,151 @@ hr {
     </div>
   </div>
 
-  <div class="links-grid reveal" style="margin-top:3rem;">
+  <div class="links-grid reveal">
     <a href="https://technosomaticarchitecture.vercel.app/" target="_blank" class="link-tile">
-      <div>
-        <p class="link-tile-title">Technosomatic Architecture</p>
-        <p class="link-tile-sub">Primary body of work · Framework</p>
-      </div>
+      <div><p class="link-tile-title">Technosomatic Architecture</p><p class="link-tile-sub">Primary body of work</p></div>
       <span class="link-arrow">↗</span>
     </a>
     <a href="https://technosomatic-rendered.vercel.app/" target="_blank" class="link-tile">
-      <div>
-        <p class="link-tile-title">Technosomatic — Rendered</p>
-        <p class="link-tile-sub">Corpus Nullum · Digital print · Sculpture</p>
-      </div>
+      <div><p class="link-tile-title">Technosomatic — Rendered</p><p class="link-tile-sub">Corpus Nullum · Digital print · Sculpture</p></div>
       <span class="link-arrow">↗</span>
     </a>
     <a href="https://technosomatic-holoscene.vercel.app/" target="_blank" class="link-tile">
-      <div>
-        <p class="link-tile-title">Descending Data</p>
-        <p class="link-tile-sub">Holoscene · Portrait of an Ego</p>
-      </div>
+      <div><p class="link-tile-title">Descending Data</p><p class="link-tile-sub">Holoscene · Portrait of an Ego</p></div>
       <span class="link-arrow">↗</span>
     </a>
     <a href="https://technosomaticreal.vercel.app/" target="_blank" class="link-tile">
-      <div>
-        <p class="link-tile-title">Technosomatic Real</p>
-        <p class="link-tile-sub">Large-scale installation · Resilience</p>
-      </div>
+      <div><p class="link-tile-title">Technosomatic Real</p><p class="link-tile-sub">Large-scale installation</p></div>
       <span class="link-arrow">↗</span>
     </a>
     <a href="https://theloopofbeing.vercel.app/" target="_blank" class="link-tile">
-      <div>
-        <p class="link-tile-title">The Loop of Being</p>
-        <p class="link-tile-sub">Beijing Biennale 2025</p>
-      </div>
+      <div><p class="link-tile-title">The Loop of Being</p><p class="link-tile-sub">Beijing Biennale 2025</p></div>
       <span class="link-arrow">↗</span>
     </a>
     <a href="https://natashabajc.com" target="_blank" class="link-tile">
-      <div>
-        <p class="link-tile-title">natashabajc.com</p>
-        <p class="link-tile-sub">Full practice · CV · Contact</p>
-      </div>
+      <div><p class="link-tile-title">natashabajc.com</p><p class="link-tile-sub">Full practice · CV · Contact</p></div>
       <span class="link-arrow">↗</span>
     </a>
   </div>
-</section>
+</div>
 
-<!-- FOOTER -->
-<hr>
-<footer>
-  <div>
-    <p class="footer-brand">Solo Exhibition Proposal</p>
-    <p class="footer-name">Nataša Bajc</p>
-    <p class="footer-role">
-      Artist · Architect · AI Researcher<br>
-      Los Angeles, California<br>
-      Nexus Hestia Technologies<br>
-      SCI-Arc / UCLA / USC
-    </p>
-    <p class="footer-copy" style="margin-top:1.5rem;">
-      ARC Gallery · Athena Fund<br>
-      September 2026 · Chicago
-    </p>
+<!-- ═══ FOOTER ═══ -->
+<div style="border-top:1px solid var(--grey-rule);">
+  <div class="footer-wrap">
+    <div>
+      <p class="footer-brand">Solo Exhibition Proposal</p>
+      <p class="footer-name">Nataša Bajc</p>
+      <p class="footer-role">Artist · Architect · AI Researcher<br>Los Angeles, California<br>Nexus Hestia Technologies<br>SCI-Arc / UCLA / USC</p>
+      <p class="footer-copy" style="margin-top:1.5rem;">ARC Gallery · Athena Fund<br>September 2026 · Chicago</p>
+    </div>
+    <div>
+      <p class="footer-brand">Contact</p>
+      <ul class="footer-links">
+        <li><a href="mailto:natasha@natashabajc.com">natasha@natashabajc.com</a></li>
+        <li><a href="mailto:natasha.bajc@nexushestia.com">natasha.bajc@nexushestia.com</a></li>
+        <li><a href="https://natashabajc.com" target="_blank">natashabajc.com</a></li>
+        <li><a href="https://nexushestia.com" target="_blank">nexushestia.com</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-brand">Navigation</p>
+      <ul class="footer-links">
+        <li><a href="#statement">01. Statement</a></li>
+        <li><a href="#works">02. Works</a></li>
+        <li><a href="#bio">03. Artist</a></li>
+        <li><a href="#sites">04. Sites</a></li>
+        <li><a href="https://technosomaticarchitecture.vercel.app" target="_blank">← Main Site ↗</a></li>
+      </ul>
+      <p class="footer-copy">© 2026 Natasha Bajc<br>All Rights Reserved · End of Render</p>
+    </div>
   </div>
-  <div>
-    <p class="footer-brand">Contact</p>
-    <ul class="footer-links">
-      <li><a href="mailto:natasha@natashabajc.com">natasha@natashabajc.com</a></li>
-      <li><a href="mailto:natasha.bajc@nexushestia.com">natasha.bajc@nexushestia.com</a></li>
-      <li><a href="https://natashabajc.com" target="_blank">natashabajc.com</a></li>
-      <li><a href="https://nexushestia.com" target="_blank">nexushestia.com</a></li>
-    </ul>
-  </div>
-  <div>
-    <p class="footer-brand">Navigation</p>
-    <ul class="footer-links">
-      <li><a href="#statement">01. Statement</a></li>
-      <li><a href="#works">02. Works</a></li>
-      <li><a href="#installation">03. Installation</a></li>
-      <li><a href="#bio">05. Artist</a></li>
-      <li><a href="#sites">06. Sites</a></li>
-      <li><a href="https://technosomaticarchitecture.vercel.app" target="_blank">← Main Site ↗</a></li>
-    </ul>
-    <p class="footer-copy">© 2026 Natasha Bajc<br>All Rights Reserved · End of Render</p>
-  </div>
-</footer>
+</div>
 
 <script>
 /* LOADER */
-window.addEventListener('load', () => {
-  setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600);
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('loader').classList.add('hidden'),700);
 });
 
 /* SCROLL REVEAL */
-const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-revealEls.forEach(el => observer.observe(el));
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.06,rootMargin:'0px 0px -30px 0px'});
+reveals.forEach(el=>obs.observe(el));
 
-/* GAZE DEMO — canvas-based sharp region */
-const gazeContainer = document.getElementById('gazeContainer');
-const gazeBase = document.getElementById('gazeBase');
-const gazeCanvas = document.getElementById('gazeCanvas');
-const ctx = gazeCanvas.getContext('2d');
+/* CHAMBRE SECRÈTE — 80px peephole */
+const wrap=document.getElementById('chambreWrap');
+const base=document.getElementById('chambreBase');
+const canvas=document.getElementById('chambreCanvas');
+const cursor=document.getElementById('chambreCursor');
+const ctx=canvas.getContext('2d');
+const HOLE=80; /* 80px as specified */
+let active=false,mx=0,my=0;
+const img=new Image();img.src='5.png';
 
-let gazeImg = new Image();
-gazeImg.src = '5.png';
-let gazeActive = false;
-let gazeX = 0, gazeY = 0;
-const RADIUS = 90;
-
-function resizeCanvas() {
-  gazeCanvas.width = gazeContainer.offsetWidth;
-  gazeCanvas.height = gazeContainer.offsetHeight;
+function resize(){
+  canvas.width=wrap.offsetWidth;
+  canvas.height=wrap.offsetHeight;
 }
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+resize();
+new ResizeObserver(resize).observe(wrap);
 
-function drawGaze() {
-  if (!gazeActive) return;
-  ctx.clearRect(0, 0, gazeCanvas.width, gazeCanvas.height);
-  if (gazeImg.complete && gazeImg.naturalWidth > 0) {
+function draw(){
+  if(!active)return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(img.complete&&img.naturalWidth>0){
     ctx.save();
-    ctx.beginPath();
-    ctx.arc(gazeX, gazeY, RADIUS, 0, Math.PI * 2);
+    /* square peephole — exactly 80px */
+    ctx.rect(mx-HOLE/2,my-HOLE/2,HOLE,HOLE);
     ctx.clip();
-    const iw = gazeImg.naturalWidth, ih = gazeImg.naturalHeight;
-    const cw = gazeCanvas.width, ch = gazeCanvas.height;
-    const scale = Math.max(cw / iw, ch / ih);
-    const dw = iw * scale, dh = ih * scale;
-    const ox = (cw - dw) / 2, oy = (ch - dh) / 2;
-    ctx.drawImage(gazeImg, ox, oy, dw, dh);
+    const iw=img.naturalWidth,ih=img.naturalHeight;
+    const cw=canvas.width,ch=canvas.height;
+    const scale=Math.max(cw/iw,ch/ih);
+    const dw=iw*scale,dh=ih*scale;
+    const ox=(cw-dw)/2,oy=(ch-dh)/2;
+    ctx.drawImage(img,ox,oy,dw,dh);
     ctx.restore();
-    /* ring */
-    ctx.beginPath();
-    ctx.arc(gazeX, gazeY, RADIUS, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    /* 80px square border */
+    ctx.strokeStyle='rgba(255,255,255,0.22)';
+    ctx.lineWidth=1;
+    ctx.strokeRect(mx-HOLE/2,my-HOLE/2,HOLE,HOLE);
   }
-  requestAnimationFrame(() => { if (gazeActive) drawGaze(); });
 }
 
-gazeContainer.addEventListener('mouseenter', () => {
-  gazeActive = true;
-  gazeBase.style.filter = 'blur(20px) brightness(0.5)';
-  drawGaze();
+function startGaze(){
+  active=true;
+  base.style.filter='blur(24px) brightness(0.35) saturate(0.5)';
+  cursor.style.display='block';
+  draw();
+}
+function endGaze(){
+  active=false;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  base.style.filter='blur(22px) brightness(0.45) saturate(0.7)';
+  cursor.style.display='none';
+}
+
+wrap.addEventListener('mouseenter',startGaze);
+wrap.addEventListener('mouseleave',endGaze);
+wrap.addEventListener('mousemove',(e)=>{
+  const r=wrap.getBoundingClientRect();
+  mx=e.clientX-r.left;my=e.clientY-r.top;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+  if(active)draw();
 });
-gazeContainer.addEventListener('mouseleave', () => {
-  gazeActive = false;
-  ctx.clearRect(0, 0, gazeCanvas.width, gazeCanvas.height);
-  gazeBase.style.filter = 'blur(18px) brightness(0.6)';
-});
-gazeContainer.addEventListener('mousemove', (e) => {
-  const rect = gazeContainer.getBoundingClientRect();
-  gazeX = e.clientX - rect.left;
-  gazeY = e.clientY - rect.top;
-});
-/* Touch support */
-gazeContainer.addEventListener('touchmove', (e) => {
+
+/* touch */
+wrap.addEventListener('touchmove',(e)=>{
   e.preventDefault();
-  const rect = gazeContainer.getBoundingClientRect();
-  const t = e.touches[0];
-  gazeActive = true;
-  gazeX = t.clientX - rect.left;
-  gazeY = t.clientY - rect.top;
-  gazeBase.style.filter = 'blur(20px) brightness(0.5)';
-  drawGaze();
-}, { passive: false });
-gazeContainer.addEventListener('touchend', () => {
-  gazeActive = false;
-  ctx.clearRect(0, 0, gazeCanvas.width, gazeCanvas.height);
-  gazeBase.style.filter = 'blur(18px) brightness(0.6)';
-});
+  const r=wrap.getBoundingClientRect();
+  const t=e.touches[0];
+  mx=t.clientX-r.left;my=t.clientY-r.top;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+  if(!active)startGaze();
+  draw();
+},{passive:false});
+wrap.addEventListener('touchend',endGaze);
 </script>
 </body>
 </html>
