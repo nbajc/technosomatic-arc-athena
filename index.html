@@ -303,8 +303,8 @@ nav{
 }
 .chambre-wrap img#chambreBase{
   width:100%;height:auto;display:block;
-  filter:blur(22px) brightness(0.45) saturate(0.7);
-  transition:filter 0.1s;
+  filter:blur(8px) brightness(0.55) saturate(0.55);
+  transition:filter 0.3s ease;
   user-select:none;pointer-events:none;
 }
 #chambreCanvas{
@@ -921,15 +921,17 @@ const obs=new IntersectionObserver((entries)=>{
 },{threshold:0.06,rootMargin:'0px 0px -30px 0px'});
 reveals.forEach(el=>obs.observe(el));
 
-/* CHAMBRE SECRÈTE — 80px peephole */
+/* CHAMBRE SECRÈTE — 80px sharp square, rest soft blur */
 const wrap=document.getElementById('chambreWrap');
 const base=document.getElementById('chambreBase');
 const canvas=document.getElementById('chambreCanvas');
 const cursor=document.getElementById('chambreCursor');
 const ctx=canvas.getContext('2d');
-const HOLE=80; /* 80px as specified */
+const HOLE=80;
 let active=false,mx=0,my=0;
-const img=new Image();img.src='5.png';
+
+/* Two image elements: one sharp (unfiltered), one we draw into canvas */
+const imgSharp=new Image();imgSharp.src='5.png';
 
 function resize(){
   canvas.width=wrap.offsetWidth;
@@ -938,38 +940,42 @@ function resize(){
 resize();
 new ResizeObserver(resize).observe(wrap);
 
-function draw(){
-  if(!active)return;
+function drawSharpSquare(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(img.complete&&img.naturalWidth>0){
-    ctx.save();
-    /* square peephole — exactly 80px */
-    ctx.rect(mx-HOLE/2,my-HOLE/2,HOLE,HOLE);
-    ctx.clip();
-    const iw=img.naturalWidth,ih=img.naturalHeight;
-    const cw=canvas.width,ch=canvas.height;
-    const scale=Math.max(cw/iw,ch/ih);
-    const dw=iw*scale,dh=ih*scale;
-    const ox=(cw-dw)/2,oy=(ch-dh)/2;
-    ctx.drawImage(img,ox,oy,dw,dh);
-    ctx.restore();
-    /* 80px square border */
-    ctx.strokeStyle='rgba(255,255,255,0.22)';
-    ctx.lineWidth=1;
-    ctx.strokeRect(mx-HOLE/2,my-HOLE/2,HOLE,HOLE);
-  }
+  if(!imgSharp.complete||!imgSharp.naturalWidth)return;
+
+  const iw=imgSharp.naturalWidth,ih=imgSharp.naturalHeight;
+  const cw=canvas.width,ch=canvas.height;
+  const scale=Math.max(cw/iw,ch/ih);
+  const dw=iw*scale,dh=ih*scale;
+  const ox=(cw-dw)/2,oy=(ch-dh)/2;
+
+  /* clip to the 80×80 square and draw the unblurred image into it */
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(mx-HOLE/2,my-HOLE/2,HOLE,HOLE);
+  ctx.clip();
+  ctx.drawImage(imgSharp,ox,oy,dw,dh);
+  ctx.restore();
+
+  /* subtle square border */
+  ctx.strokeStyle='rgba(255,255,255,0.18)';
+  ctx.lineWidth=1;
+  ctx.strokeRect(mx-HOLE/2,my-HOLE/2,HOLE,HOLE);
 }
 
 function startGaze(){
   active=true;
-  base.style.filter='blur(24px) brightness(0.35) saturate(0.5)';
+  /* background image: light blur — still legible, not obliterated */
+  base.style.filter='blur(6px) brightness(0.6) saturate(0.6)';
   cursor.style.display='block';
-  draw();
+  drawSharpSquare();
 }
 function endGaze(){
   active=false;
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  base.style.filter='blur(22px) brightness(0.45) saturate(0.7)';
+  /* resting state: slightly more blurred but not fully hidden */
+  base.style.filter='blur(8px) brightness(0.55) saturate(0.55)';
   cursor.style.display='none';
 }
 
@@ -979,7 +985,7 @@ wrap.addEventListener('mousemove',(e)=>{
   const r=wrap.getBoundingClientRect();
   mx=e.clientX-r.left;my=e.clientY-r.top;
   cursor.style.left=mx+'px';cursor.style.top=my+'px';
-  if(active)draw();
+  if(active)drawSharpSquare();
 });
 
 /* touch */
@@ -990,7 +996,7 @@ wrap.addEventListener('touchmove',(e)=>{
   mx=t.clientX-r.left;my=t.clientY-r.top;
   cursor.style.left=mx+'px';cursor.style.top=my+'px';
   if(!active)startGaze();
-  draw();
+  drawSharpSquare();
 },{passive:false});
 wrap.addEventListener('touchend',endGaze);
 </script>
