@@ -669,6 +669,11 @@
     <div class="work-interactive">
       <div>
         <img src="gaze04.jpg" alt="Chambre Secrète — interactive installation documentation" class="interactive-img">
+        <!-- PEEPHOLE DEMO -->
+        <div style="margin-top:16px;position:relative;">
+          <div style="font-family:var(--font-mono);font-size:clamp(8px,0.75vw,10px);color:#555;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;">↓ Move cursor to reveal · Simulated gaze interaction</div>
+          <canvas id="chambreCanvas" style="width:100%;display:block;cursor:none;border:1px solid #1e1e1e;"></canvas>
+        </div>
       </div>
       <div>
         <div class="work-fig">Interactive · Bajc-10</div>
@@ -788,6 +793,116 @@
     document.getElementById('videoModal').classList.remove('active');
     document.getElementById('videoFrame').src = '';
   }
+
+  // CHAMBRE SECRETE — peephole canvas
+  (function() {
+    const canvas = document.getElementById('chambreCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const PEEP = 80;
+    let mouseX = -200, mouseY = -200;
+    let img = new Image();
+    img.crossOrigin = 'anonymous';
+    // Use one of the source images as the sharp reveal
+    img.src = '5.png';
+
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const w = Math.floor(rect.width);
+      const h = Math.floor(w * 0.6);
+      canvas.width = w;
+      canvas.height = h;
+      draw();
+    }
+
+    function draw() {
+      const w = canvas.width;
+      const h = canvas.height;
+      if (w === 0 || h === 0) return;
+
+      // Draw blurred background — dark with faint image hint
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(0, 0, w, h);
+
+      if (img.complete && img.naturalWidth > 0) {
+        // Blurred full image
+        ctx.save();
+        ctx.globalAlpha = 0.18;
+        ctx.filter = 'blur(18px)';
+        ctx.drawImage(img, 0, 0, w, h);
+        ctx.filter = 'none';
+        ctx.globalAlpha = 1;
+        ctx.restore();
+
+        // Sharp peephole at cursor position
+        if (mouseX >= 0) {
+          const px = mouseX - PEEP / 2;
+          const py = mouseY - PEEP / 2;
+
+          // Clip to peephole square
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(px, py, PEEP, PEEP);
+          ctx.clip();
+
+          // Draw sharp image inside peephole
+          ctx.globalAlpha = 1;
+          ctx.drawImage(img, 0, 0, w, h);
+
+          ctx.restore();
+
+          // Thin red border around peephole
+          ctx.strokeStyle = 'rgba(204,0,0,0.6)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(px, py, PEEP, PEEP);
+        }
+      } else {
+        // Image not loaded yet — show placeholder text
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#333';
+        ctx.font = '10px Space Mono, monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('MOVE CURSOR TO REVEAL', w/2, h/2);
+      }
+    }
+
+    canvas.addEventListener('mousemove', function(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      mouseX = (e.clientX - rect.left) * scaleX;
+      mouseY = (e.clientY - rect.top) * scaleY;
+      draw();
+    });
+
+    canvas.addEventListener('mouseleave', function() {
+      mouseX = -200;
+      mouseY = -200;
+      draw();
+    });
+
+    // Touch support
+    canvas.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      mouseX = (e.touches[0].clientX - rect.left) * scaleX;
+      mouseY = (e.touches[0].clientY - rect.top) * scaleY;
+      draw();
+    }, { passive: false });
+
+    img.onload = function() { resize(); };
+    img.onerror = function() {
+      // fallback to gaze04 if 5.png not found
+      img.src = 'gaze04.jpg';
+    };
+
+    window.addEventListener('resize', resize);
+    resize();
+  })();
 </script>
 </body>
 </html>
